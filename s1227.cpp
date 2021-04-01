@@ -1,29 +1,50 @@
 #include <iostream>
-//#include <stdio.h>
 
 using namespace std;
 
 const int MIRO_SIZE = 100;
-char miro[MIRO_SIZE][MIRO_SIZE] = { 0, };
+const int QUEUE_SIZE = 8000;
 
 const int dx[4] = { 1,0,-1,0 }; //우하좌상
 const int dy[4] = { 0,1,0,-1 };
 
-bool visit[MIRO_SIZE][MIRO_SIZE] = { false, };
+char miro[MIRO_SIZE][MIRO_SIZE] = { 0, };
 
-int dfs_recursive(int x, int y) {
+enum {
+	WALL = '1',
+	ROAD = '0',
+	GOAL = '3',
+	START = '2'
+};
 
-	visit[y][x] = true;
-	for (int i = 0; i < 4; i++) {
-		int nxtx = x + dx[i];
-		int nxty = y + dy[i];
+int bfs_loop(int x, int y) {
+	int* q = (int *)malloc(sizeof(int)*QUEUE_SIZE);
 
-		if (miro[nxty][nxtx] == '3') return 1;
-		if (miro[nxty][nxtx] == '0' && !visit[nxty][nxtx]) {
-			if (dfs_recursive(nxtx, nxty)) return 1;
+	int front = 0, rear = 0;
+
+	q[++rear] = x;
+	q[++rear] = y;
+
+	while (front != rear) {
+		int x = q[(++front) % QUEUE_SIZE];
+		int y = q[(++front) % QUEUE_SIZE];
+
+		if (miro[y][x] == GOAL) return 1;
+		if (miro[y][x] != WALL) {
+			miro[y][x] = WALL;
+
+			for (int i = 0; i < 4; i++) {
+				int nx = x + dx[i];
+				int ny = y + dy[i];
+
+				if (miro[ny][nx] != WALL) {
+					q[(++rear) % QUEUE_SIZE] = nx;
+					q[(++rear) % QUEUE_SIZE] = ny;
+				}
+			}
 		}
+
 	}
-	visit[y][x] = false;
 	return 0;
 }
 
@@ -36,7 +57,7 @@ int main() {
 	for (int tc = 0; tc < 10; tc++) {
 		int t;
 		cin >> t;
-        
+
 		int stx, sty;
 		for (int i = 0; i < MIRO_SIZE; i++) {
 			for (int j = 0; j < MIRO_SIZE; j++) {
@@ -48,14 +69,9 @@ int main() {
 			}
 		}
 
-		int result = dfs_recursive(stx, sty);
+		int result = bfs_loop(stx, sty);
 		cout << "#" << t << " " << result << endl;
 
-		for (int i = 0; i < MIRO_SIZE; i++) {
-			for (int j = 0; j < MIRO_SIZE; j++) {
-				visit[i][j] = false;
-			}
-		}
 	}
 	return 0;
 }
