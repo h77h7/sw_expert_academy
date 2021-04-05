@@ -1,61 +1,80 @@
 #include <stdio.h>
 
-int visit[10] = { 0, }; //방문 표시
-int min = 10000;
+int cus_num;
+int cus_x[11] = { 0, };
+int cus_y[11] = { 0, };
+//bool visit[11] = { false, };
+unsigned short visit = 0;
+int distances[11][11] = { 0, };
+int finalDis[11] = { 0, };
+int com_x, com_y;
+int min = 100000;
 
-void re(int N, int sum, int curx, int cury, int* cos_x, int* cos_y,int home_x, int home_y) {
-	int flag = 1;
-	for (int i = 0; i < N; i++) {
-		if (visit[i] == 0) {
-			flag = 0;
-			visit[i] = 1;
+void move(int idx, int count) {
+	bool flag = false;
 
-			int x_dis = curx - cos_x[i];
-			x_dis = x_dis > 0 ? x_dis : -x_dis;
-			int y_dis = cury - cos_y[i];
-			y_dis = y_dis > 0 ? y_dis : -y_dis;
-			re(N, sum + x_dis + y_dis, cos_x[i], cos_y[i], cos_x, cos_y, home_x, home_y);
-			visit[i] = 0;
+	int cur_x = cus_x[idx];
+	int cur_y = cus_y[idx];
+
+	for (int i = 0; i <= cus_num; i++) {
+        if(!((1<<i) & visit)){
+            flag = true;
+            
+            if (!distances[idx][i]) {
+				int dis_x = cur_x > cus_x[i] ? cur_x - cus_x[i] : cus_x[i] - cur_x;
+				int dis_y = cur_y > cus_y[i] ? cur_y - cus_y[i] : cus_y[i] - cur_y;
+
+				distances[idx][i] = dis_x + dis_y;
+				distances[i][idx] = distances[idx][i];
+			}
+
+			int nxt_count = count + distances[idx][i];
+			if (nxt_count < min) {
+				visit |= (1<<i);
+				move(i, nxt_count);
+				visit &= ~(1<<i);
+			}
+        }
+	}
+	if (!flag) {	//모두 방문
+		if (!finalDis[idx]) {
+			int final_xdis = com_x > cur_x ? com_x - cur_x : cur_x - com_x;
+			int final_ydis = com_y > cur_y ? com_y - cur_y : cur_y - com_y;
+			finalDis[idx] = final_xdis + final_ydis;
 		}
+		count = count + finalDis[idx];
+		if (count < min) min = count;
 	}
-	if (flag) {
-		int x_dis = curx - home_x;
-		x_dis = x_dis > 0 ? x_dis : -x_dis;
-		int y_dis = cury - home_y;
-		y_dis = y_dis > 0 ? y_dis : -y_dis;
-		sum += x_dis + y_dis;
-		if (sum < min) min = sum;
-	}
-
 }
 
 int main() {
 	//freopen("input.txt", "r", stdin);
 	setbuf(stdout, NULL);
 
-	int tc = 0;
+	int tc;
 	scanf("%d", &tc);
 
 	for (int t = 1; t <= tc; t++) {
-		int N = 0;
-		scanf(" %d", &N);
+		int minDis = 10000;
+		int minIdx = 1;
 
-		int com_x = 0, com_y = 0;
-		int home_x = 0, home_y = 0;
-		int cos_x[10] = { 0, }, cos_y[10] = { 0, };
-		scanf("%d %d %d %d", &com_x, &com_y, &home_x, &home_y);
-		for (int i = 0; i < N; i++) {
-			scanf(" %d %d", &cos_x[i], &cos_y[i]);
+		scanf("%d", &cus_num);
+		scanf("%d %d %d %d", &cus_x[0], &cus_y[0], &com_x, &com_y);		//cus_x[0]과 cus_y[0]에는 집 저장
+		for (int i = 1; i <= cus_num; i++) {	//인덱스 1부터 손님 저장
+			scanf("%d %d", &cus_x[i], &cus_y[i]);
 		}
 
-		re(N, 0, com_x, com_y, cos_x, cos_y, home_x, home_y);
+		move(0, 0);
 
 		printf("#%d %d\n", t, min);
-
-		min = 10000;
+		min = 100000;
+        visit = 0;
+		for (int i = 0; i < 11; i++) {
+			finalDis[i] = 0;  cus_x[i] = 0; cus_y[i] = 0;
+            for(int j=0; j<11; j++){
+                distances[i][j] = 0;
+            }
+		}
 	}
-	
-
-
 	return 0;
 }
