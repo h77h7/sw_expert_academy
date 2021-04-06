@@ -1,3 +1,4 @@
+//K번째 문자열
 #include <iostream>
 #include <stdio.h>
 
@@ -15,7 +16,7 @@ int str_cmp(int idx1, int idx2) {
 	return (arr[idx1] - arr[idx2]);
 }
 
-int str_cmp_(int idx1, int idx2) {
+int str_cmp_(int idx1, int idx2) {	//공통 접두어 길이 찾기
 	int cnt = 0;
 	while (idx1 < arrLen && idx2 < arrLen && arr[idx1] == arr[idx2]) {
 		cnt++;
@@ -45,11 +46,7 @@ void quicksort(int* a, int begin, int end) {
 	}
 }
 
-
-
 int main() {
-	freopen("input_1257.txt", "r", stdin);
-
 	cin.tie(NULL);
 
 	int tc;
@@ -78,17 +75,26 @@ int main() {
 
 		cout << "#" << t << " ";
 		int cnt = 0;
+		int start_idx = -1;
+		int end_idx = -1;
 		for (int i = 0; i < arrLen; i++) {
 			int curCnt = 0;
 			curCnt += (arrLen - A[i] - LCP[i]);
-			if (K > cnt && K <= cnt + curCnt) { //K가 현재까지 누적된 부분문자 수와 이번 단계의 부분문자 수 사이이면 이 단계에 K번째 부분문자 있음
-				for (int j = A[i]; j < A[i] + K - cnt + LCP[i]; j++) {  //중복된 부분문자 제거하기 위해 LCP[i]더해줌
-					cout << arr[j];
-				}
-				cout << endl;
+			if (K > cnt && K <= cnt + curCnt) {
+				start_idx = A[i];
+				end_idx = A[i] + K - cnt + LCP[i];
 				break;
 			}
 			cnt += curCnt;
+		}
+		if (start_idx < 0) {
+			cout << "none\n";
+		}
+		else {
+			for (int i = start_idx; i < end_idx; i++) {
+				cout << arr[i];
+			}
+			cout << endl;
 		}
 	}
 }
