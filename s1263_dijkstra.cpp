@@ -61,7 +61,7 @@ int dijkstra(int s, int N) {
 
 			for (int i = 1; i <= N; i++) {
 				if (g[w][i] != INFINITI && d[i] > d[w] + g[w][i]) {
-					d[i] = d[w] + g[w][i];
+					d[i] = d[w] + g[w][i];		//별도 d테이블 만들지말고 g를 업데이트하기
 					push(i);
 				}
 			}
@@ -97,7 +97,7 @@ int main() {
 				d[j] = INFINITI;
 				U[j] = false;
 			}
-			g[i][0] = dijkstra(i, N);
+			g[i][0] = dijkstra(i, N);	//minCC를 여기서 업데이트하기
 		}
 
 		int minCC = INFINITI;
