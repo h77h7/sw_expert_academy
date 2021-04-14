@@ -60,7 +60,7 @@ int dijkstra(int s, int N) {
 			U[w] = true;
 
 			for (int i = 1; i <= N; i++) {
-				if (g[w][i] != INFINITI && d[i] > d[w] + g[w][i]) {
+				if (g[w][i] != INFINITI && d[i] > d[w] + g[w][i]) {	//floyd에 비해 dijkstra가 여기서 커팅되는 경우가 더 많음(floyd는 무조건 다 돌아야 최단거리 갱신됨)
 					d[i] = d[w] + g[w][i];		//별도 d테이블 만들지말고 g를 업데이트하기
 					push(i);
 				}
