@@ -5,7 +5,7 @@
 
 using namespace std;
 
-const int MAX_N = 501;
+const int MAX_N = 502;
 
 char a[MAX_N] = { 0 };
 char b[MAX_N] = { 0 };
