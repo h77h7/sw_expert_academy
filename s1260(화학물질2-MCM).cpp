@@ -61,7 +61,22 @@ int main() {
 				}
 			}
 		}
-
+		
+		//d[0]에 들어갈 값 찾기(count 기법 사용)
+		//int dIdx = 0;
+		//int curMsIdx = 0;
+		//short countArr[MAX_N+1] = { 0 };
+		//for (int i = 0; i < msIdx; i++) {
+		//	countArr[ms[i][0]]+=2;
+		//	countArr[ms[i][1]]++;
+		//}
+		//for (int i = 1; i <= MAX_N; i++) {
+		//	if (countArr[i] == 2) d[dIdx++] = i;
+		//}
+		//for (int i = 0; i < msIdx; i++) {
+		//	if (ms[i][0] == d[0]) curMsIdx = i;
+		//}
+		
 		//d[0]에 들어갈 값 찾기
 		int dIdx = 0;
 		int curMsIdx = 0;
